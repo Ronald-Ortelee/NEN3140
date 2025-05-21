@@ -8,10 +8,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditDut extends EditRecord
 {
-
-	
-
-    protected static string $resource = DutResource::class;
+	protected static string $resource = DutResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -20,7 +17,7 @@ class EditDut extends EditRecord
         ];
     }
 
-//Redirect to list after save
+	//Redirect to list after save
     protected function getRedirectUrl(): ?string
     {
         return static::getResource()::getUrl('index');

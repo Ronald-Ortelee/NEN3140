@@ -77,17 +77,16 @@ class DutResource extends Resource
 						->label('De gangbare locatie van dit arbeidsmiddel'),
 					])
 					->columns(2),
+				]),
 
-				])
-				->columnSpan(['lg' => 2]),
-
-				Forms\Components\Section::make('Algemene kenmerken')
+				Forms\Components\Section::make('Beschrijving')
 				->schema([ 
 
 					Forms\Components\Select::make('devicetype_id')
 					->relationship(name: 'DutDeviceTypeId', titleAttribute: 'name')
 					->required()
 					->label('Soort arbeidsmiddel')
+					->tooltip("Wat is het voor een ding")
 					->searchable()
 					->preload()
 					->createOptionForm([
@@ -106,8 +105,8 @@ class DutResource extends Resource
 							->modalContent(view('filament.modals.info-category-modal', [
 								'categories' => Category::all(),
 							]))
-            			->modalSubmitAction(false) // Hides the submit button
-            		)
+->modalSubmitAction(false) // Hides the submit button
+)
 						->preload()
 					]),
 
@@ -115,6 +114,7 @@ class DutResource extends Resource
 					->relationship(name: 'DutSafetyClassId', titleAttribute: 'name')
 					->required()
 					->label('Veiligheidsklasse')
+					->tooltip("Klasse 1: geaarde stekker _ Klasse 2: ongeaarde stekker, dubbel geisoleerd")
 					->preload(),
 
 					Forms\Components\Select::make('brand_id')
@@ -140,6 +140,22 @@ class DutResource extends Resource
 						->unique(ignoreRecord: true)
 						->label('Modelnummer'),
 					]),
+				])
+				->columns(2),
+
+			])
+			->columnSpan(['lg' => 2]),
+
+
+
+
+
+			Forms\Components\Group::make()
+			->columns(1) // Force single column layout
+			->schema([
+
+				Forms\Components\Section::make('Status')
+				->schema([
 
 					Forms\Components\DatePicker::make('date_in_use')
 					->native(false)
@@ -150,85 +166,71 @@ class DutResource extends Resource
 					->label('In gebruik sinds')
 					->required(),
 
+					Forms\Components\Toggle::make('status')
+					->label('In gebruik')
+					->reactive()
+					->default(true),
+
 					Forms\Components\DatePicker::make('date_out_of_use')
 					->native(false)
 					->displayFormat('l d F Y')
 					->locale('nl')
-					->label('Buiten gebruik gesteld')
 
+					->label('Buiten gebruik sinds')
 					->required(fn ($get) => ! $get('status'))
 					->visible(fn ($get) => ! $get('status'))
-
-
 					->closeOnDateSelection(),
 
+					Fieldset::make('Inspectie')
+					->columns(1) // Force single column layout
+					->schema([
+
+						Forms\Components\Placeholder::make('Laatste_inspectie')
+						->live()
+						->inlineLabel()
+						->label('Laatste')
+						->content(function ($record) {
+							$latestInspection = optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection;
+							if ($latestInspection) {
+								Carbon::setLocale(app()->getLocale());
+								return Carbon::parse($latestInspection)->translatedFormat('F Y');
+							}
+
+							return now()->translatedFormat('Y-m-d');
+						}),
+
+						Placeholder::make('Volgende_inspectie')
+						->live()
+						->inlineLabel()
+						->label('Geldig tot')
+						->content(function ($record) {
+							$latestInspection = optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection;
+
+							if ($latestInspection) {
+								Carbon::setLocale(app()->getLocale()); 
+								return Carbon::parse($latestInspection)
+								->addYears($record->DutsInCategory->inspection_interval)
+								->translatedFormat('F Y');
+							}
+
+							return now()->translatedFormat('Y-m-d');
+						}),
+
+						Forms\Components\Placeholder::make('Inspectie interval')
+						->content(fn ($record): string => 'Eens per '. $record->DutsInCategory->inspection_interval . ' jaar')
+						->inlineLabel()
+						->label('Frequentie'),
+					]),
 				])
-				->columns(2),
-
+				->hidden(fn (?Dut $record) => $record === null)
+// ->columnSpan(['lg' => 1])
+				,
 			])
-			->columnSpan(['lg' => 2]),
-
-			Forms\Components\Group::make()
-			->schema([
-
-				Forms\Components\Section::make('Status')
-				->schema([
-
-					Forms\Components\Toggle::make('status')
-					->label('In gebruik')
-					->helperText('This product will be hidden from all sales channels.')
-					->reactive()
-					->default(true),
-
-					Forms\Components\Placeholder::make('Laatste_inspectie')
-					->columns(4)
-					->label('Laatste inspectie')
-					->content(fn ($record) => optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection ?? 'Nog nooit geinspecteerd'
-				),
-
-
-
-				// 	Forms\Components\Placeholder::make('Staat')
-				// 	->inlinelabel()
-				// 	->columns(4)
-				// 	->label('Laatste inspectie')
-				// 	->content(fn ($record) => optional($record->inspections()->latest('date_of_inspection')->first())->inspection_result ?? 'Nog nooit geinspecteerd'
-				// ),
-
-
-
-					Forms\Components\Placeholder::make('Inspectie interval')
-					->content(fn ($record): string => $record->DutsInCategory->inspection_interval . ' jaar')
-					->label('Inspectie interval'),
-
-					Forms\Components\Placeholder::make('Volgende_inspectie')
-					->label('Volgende inspectie')
-					->content(function ($record) {
-						$latestInspection = optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection;
-						if ($latestInspection) {
-							return Carbon::parse($latestInspection)
-							->addYears($record->DutsInCategory->inspection_interval)
-							->format('Y-m-d');
-						}
-						return now()->format('Y-m-d');
-					}),
-
-                // Forms\Components\Placeholder::make('created_at')
-                // ->label('Geregistreerd')
-                // ->content(fn (Dut $record): ?string => $record->created_at?->diffForHumans()),
-
-                // Forms\Components\Placeholder::make('updated_at')
-                // ->label('Aangepast')
-                // ->content(fn (Dut $record): ?string => $record->updated_at?->diffForHumans()),
-
-				]),
-
-			])
-			->hidden(fn (?Dut $record) => $record === null)
-			->columnSpan(['lg' => 1]),
 		])
 ->columns(3);
 }
+
+
 
 public static function table(Table $table): Table
 {  
@@ -236,7 +238,6 @@ public static function table(Table $table): Table
 	->description('Overzicht van geregistreerde arbeidsmiddelen.')
 	->defaultPaginationPageOption(15)
 	->columns
-
 
 	([
 
@@ -297,11 +298,6 @@ public static function table(Table $table): Table
 			return $query->withAggregate('inspections', 'date_of_inspection')
 			->orderBy(implode('_', ['inspections', 'date_of_inspection']), $direction);
 		}),
-
-
-
-
-
 
 		Tables\Columns\TextColumn::make('DutDeviceTypeId.name')
 		->label('Soort')
@@ -368,17 +364,15 @@ public static function table(Table $table): Table
 
 	->actions([
 		Tables\Actions\EditAction::make()->label(__('Bewerk')),
-		// Tables\Actions\ViewAction::make()->label(__('Bekijk')),
+// Tables\Actions\ViewAction::make()->label(__('Bekijk')),
 	])
 	->bulkActions([
 // Tables\Actions\BulkActionGroup::make([
 //     Tables\Actions\DeleteBulkAction::make(),
 // ]),
+
 	]);
 }
-
-
-
 
 public static function getRelations(): array
 {
@@ -394,7 +388,7 @@ public static function getPages(): array
 		'index' => Pages\ListDuts::route('/'),
 		'create' => Pages\CreateDut::route('/create'),
 		'edit' => Pages\EditDut::route('/{record}/edit'),
-        // 'view' => Pages\ViewDut::route('/{record}'),
+// 'view' => Pages\ViewDut::route('/{record}'),
 	];
 }
 
