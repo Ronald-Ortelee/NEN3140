@@ -302,7 +302,12 @@ public function table(Table $table): Table
 //
 	])
 	->headerActions([
+		// Tables\Actions\CreateAction::make()
+
 		Tables\Actions\CreateAction::make()
+		->after(function ($record, $livewire) {
+			$livewire->dispatch('refreshPlaceholders');
+		})
 		->createAnother(false),
 	])
 	->actions([

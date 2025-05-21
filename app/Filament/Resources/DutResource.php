@@ -147,9 +147,6 @@ class DutResource extends Resource
 			->columnSpan(['lg' => 2]),
 
 
-
-
-
 			Forms\Components\Group::make()
 			->columns(1) // Force single column layout
 			->schema([
@@ -157,13 +154,18 @@ class DutResource extends Resource
 				Forms\Components\Section::make('Status')
 				->schema([
 
+
+					Fieldset::make('In gebruik')
+					->columns(1) // Force single column layout
+					->schema([
+
 					Forms\Components\DatePicker::make('date_in_use')
 					->native(false)
 					->displayFormat('l d F Y')
 					->locale('nl')
 					->default(now()) 
 					->closeOnDateSelection()
-					->label('In gebruik sinds')
+					->label('Sinds')
 					->required(),
 
 					Forms\Components\Toggle::make('status')
@@ -180,7 +182,7 @@ class DutResource extends Resource
 					->required(fn ($get) => ! $get('status'))
 					->visible(fn ($get) => ! $get('status'))
 					->closeOnDateSelection(),
-
+]),
 					Fieldset::make('Inspectie')
 					->columns(1) // Force single column layout
 					->schema([
@@ -196,7 +198,7 @@ class DutResource extends Resource
 								return Carbon::parse($latestInspection)->translatedFormat('F Y');
 							}
 
-							return now()->translatedFormat('Y-m-d');
+							return ('-nog nooit-');
 						}),
 
 						Placeholder::make('Volgende_inspectie')
@@ -205,15 +207,13 @@ class DutResource extends Resource
 						->label('Geldig tot')
 						->content(function ($record) {
 							$latestInspection = optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection;
-
 							if ($latestInspection) {
 								Carbon::setLocale(app()->getLocale()); 
 								return Carbon::parse($latestInspection)
 								->addYears($record->DutsInCategory->inspection_interval)
 								->translatedFormat('F Y');
 							}
-
-							return now()->translatedFormat('Y-m-d');
+							return ('-nog nooit-');
 						}),
 
 						Forms\Components\Placeholder::make('Inspectie interval')
@@ -361,7 +361,7 @@ public static function table(Table $table): Table
 
 	])
 	->defaultSort('Volgende_inspectie', 'asc')
-
+	
 	->actions([
 		Tables\Actions\EditAction::make()->label(__('Bewerk')),
 // Tables\Actions\ViewAction::make()->label(__('Bekijk')),
