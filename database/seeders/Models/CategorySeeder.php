@@ -16,8 +16,7 @@ class CategorySeeder extends Seeder
         /**
          * Command :
          * artisan seed:generate --model-mode --models=Category
-         *
-         * ****
+         * 
          */
         
         $newData0 = \App\Models\Category::create([
