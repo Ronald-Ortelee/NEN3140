@@ -190,7 +190,7 @@ class DutResource extends Resource
 						Forms\Components\Placeholder::make('Laatste_inspectie')
 						->live()
 						->inlineLabel()
-						->label('Laatste')
+						->label('Laatste:')
 						->content(function ($record) {
 							$latestInspection = optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection;
 							if ($latestInspection) {
@@ -204,7 +204,7 @@ class DutResource extends Resource
 						Placeholder::make('Volgende_inspectie')
 						->live()
 						->inlineLabel()
-						->label('Geldig tot')
+						->label('Geldig tot:')
 						->content(function ($record) {
 							$latestInspection = optional($record->inspections()->latest('date_of_inspection')->first())->date_of_inspection;
 							if ($latestInspection) {
@@ -219,7 +219,7 @@ class DutResource extends Resource
 						Forms\Components\Placeholder::make('Inspectie interval')
 						->content(fn ($record): string => 'Eens per '. $record->DutsInCategory->inspection_interval . ' jaar')
 						->inlineLabel()
-						->label('Frequentie'),
+						->label('Frequentie:'),
 					]),
 				])
 				->hidden(fn (?Dut $record) => $record === null)
@@ -361,7 +361,7 @@ public static function table(Table $table): Table
 
 	])
 	->defaultSort('Volgende_inspectie', 'asc')
-	
+
 	->actions([
 		Tables\Actions\EditAction::make()->label(__('Bewerk')),
 // Tables\Actions\ViewAction::make()->label(__('Bekijk')),
