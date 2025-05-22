@@ -21,6 +21,7 @@
 /.vscode
 /.fleet
 .DS_Store
+/.DS_Store
 Thumbs.db
 
 # Composer and npm logs
