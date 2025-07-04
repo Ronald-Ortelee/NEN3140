@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('duts', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->startingValue(1200);
             $table->unsignedBigInteger('type_id')->default(1)->index('device_under_tests_type_id_foreign')->comment('Foreign key of the type table');
             $table->unsignedBigInteger('location_id')->index('device_under_tests_location_id_foreign')->comment('Foreign key of the location table');
             $table->unsignedBigInteger('brand_id')->index('device_under_tests_brand_id_foreign')->comment('Foreign key of brand_model table');
