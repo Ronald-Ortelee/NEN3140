@@ -69,14 +69,18 @@ class AdminPanelProvider extends PanelProvider
             
         }
 
-
         public function boot(): void
         {
         	FilamentView::registerRenderHook(
         		PanelsRenderHook::GLOBAL_SEARCH_AFTER,
-        		fn (): string => '<a href="https://github.com/Ronald-Ortelee/NEN3140" target="_blank" rel="noopener noreferrer">
-        		<img src="' . asset('images/github-mark.svg') . '" alt="GitHub" class="h-8 w-8 mr-2">
-        		</a>'
+        		fn (): string => '
+        		<div x-data="{ mode: document.documentElement.classList.contains(\'dark\') ? \'dark\' : \'light\' }"
+        		x-on:dark-mode-toggled.window="mode = $event.detail">
+        		<a href="https://github.com/Ronald-Ortelee/NEN3140" target="_blank" rel="noopener noreferrer">
+        		<img x-show="mode === \'light\'" src="' . asset('images/github-mark-dark.svg') . '" alt="GitHub Light" class="h-8 w-8 mr-2">
+        		<img x-show="mode === \'dark\'" src="' . asset('images/github-mark-white.svg') . '" alt="GitHub Dark" class="h-8 w-8 mr-2">
+        		</a>
+        		</div>'
         	);
         }
 
