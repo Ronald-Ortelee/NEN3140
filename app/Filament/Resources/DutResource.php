@@ -105,8 +105,8 @@ class DutResource extends Resource
 							->modalContent(view('filament.modals.info-category-modal', [
 								'categories' => Category::all(),
 							]))
-->modalSubmitAction(false) // Hides the submit button
-)
+						->modalSubmitAction(false) // Hides the submit button
+							)
 						->preload()
 					]),
 
@@ -159,30 +159,30 @@ class DutResource extends Resource
 					->columns(1) // Force single column layout
 					->schema([
 
-					Forms\Components\DatePicker::make('date_in_use')
-					->native(false)
-					->displayFormat('l d F Y')
-					->locale('nl')
-					->default(now()) 
-					->closeOnDateSelection()
-					->label('Sinds')
-					->required(),
+						Forms\Components\DatePicker::make('date_in_use')
+						->native(false)
+						->displayFormat('l d F Y')
+						->locale('nl')
+						->default(now()) 
+						->closeOnDateSelection()
+						->label('Sinds')
+						->required(),
 
-					Forms\Components\Toggle::make('status')
-					->label('In gebruik')
-					->reactive()
-					->default(true),
+						Forms\Components\Toggle::make('status')
+						->label('In gebruik')
+						->reactive()
+						->default(true),
 
-					Forms\Components\DatePicker::make('date_out_of_use')
-					->native(false)
-					->displayFormat('l d F Y')
-					->locale('nl')
+						Forms\Components\DatePicker::make('date_out_of_use')
+						->native(false)
+						->displayFormat('l d F Y')
+						->locale('nl')
 
-					->label('Buiten gebruik sinds')
-					->required(fn ($get) => ! $get('status'))
-					->visible(fn ($get) => ! $get('status'))
-					->closeOnDateSelection(),
-]),
+						->label('Buiten gebruik sinds')
+						->required(fn ($get) => ! $get('status'))
+						->visible(fn ($get) => ! $get('status'))
+						->closeOnDateSelection(),
+					]),
 					Fieldset::make('Inspectie')
 					->columns(1) // Force single column layout
 					->schema([
