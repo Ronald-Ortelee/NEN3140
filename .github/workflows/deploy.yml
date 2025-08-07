@@ -1,0 +1,51 @@
+name: Deploy Laravel 12
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: mbstring, pdo_mysql, xml, bcmath
+
+      - name: Install Composer deps
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Generate APP_KEY
+        run: php artisan key:generate --ansi
+
+      - name: Prepare SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.LIVE_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.LIVE_HOST_IP }} >> ~/.ssh/known_hosts
+
+      - name: Sync to Shared Host
+        run: |
+          rsync -avz --delete \
+            --exclude='.git*' \
+            --exclude='node_modules' \
+            --exclude='tests' \
+            ./ \
+            ${{ secrets.LIVE_HOST_USER }}@${{ secrets.LIVE_HOST_IP }}:${{ secrets.LIVE_SSH_PATH }}
+
+      - name: Run Migrations & Caches on Host
+        run: ssh -i ~/.ssh/id_ed25519 ${{ secrets.LIVE_HOST_USER }}@${{ secrets.LIVE_HOST_IP }} << 'EOF'
+          cd ${{ secrets.LIVE_SSH_PATH }}
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan storage:link
+        EOF
