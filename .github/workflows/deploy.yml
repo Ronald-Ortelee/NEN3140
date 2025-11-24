@@ -51,5 +51,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /home/squintnl/3140.squint.nl
-          php artisan migrate --force
+          php artisan migrate 
           php artisan optimize
