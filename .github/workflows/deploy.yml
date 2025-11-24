@@ -34,18 +34,18 @@ jobs:
     - name: Synchronize Files To Server
       uses: easingthemes/ssh-deploy@v2.1.5
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.LIVE_SSH_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SOURCE: "."
-        REMOTE_HOST: ${{ secrets.LIVE_HOST_IP }}
-        REMOTE_USER: ${{ secrets.LIVE_HOST_USER }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: "/var/www/html/glennraya.com"
 
     - name: Run Remote/Artisan Commands
       uses: appleboy/ssh-action@v0.1.6
       with:
-        host: ${{ secrets.LIVE_HOST_IP }}
-        username: ${{ secrets.LIVE_HOST_USER }}
-        key: ${{ secrets.LIVE_SSH_KEY }}
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/www/html/glennraya.com
           php artisan migrate --force
