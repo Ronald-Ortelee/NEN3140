@@ -1,37 +1,17 @@
-# Laravel core files to ignore
-/vendor
-/node_modules
-/public/storage
-/public/hot
-/storage/*.key
-/bootstrap/cache
-/.env
-/.env.*.backup
-/.phpunit.result.cache
-
-# Filament-specific files
-/public/build
-/public/mix-manifest.json
-/public/mix.js
-/resources/css/app.css
-/resources/js/app.js
-
-# IDE and system files
 /.idea
+/.phpunit.cache
+/build
+/coverage
+/node_modules
+/node_modules.nosync
+/vendor
+/vendor.nosync
 /.vscode
-/.fleet
 .DS_Store
-/.DS_Store
+.phpunit.cache
+.phpunit.result.cache
+composer.phar
 Thumbs.db
-
-# Composer and npm logs
-/composer.lock
-/npm-debug.log
-/yarn-error.log
-
-# Homestead and Docker
-Homestead.json
-Homestead.yaml
-/.vagrant
-/docker-compose.yml
-
+phpunit.xml
+.env.testing
+!phpunit.*.xml
