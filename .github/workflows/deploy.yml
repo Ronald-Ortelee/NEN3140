@@ -43,13 +43,13 @@ jobs:
         TARGET: "/home/squintnl/3140.squint.nl"
         # TARGET: "/var/www/html/glennraya.com"
 
-    # - name: Run Remote/Artisan Commands
-    #   uses: appleboy/ssh-action@v0.1.6
-    #   with:
-    #     host: ${{ secrets.REMOTE_HOST }}
-    #     username: ${{ secrets.REMOTE_USER }}
-    #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-    #     script: |
-    #       cd /var/www/html/glennraya.com
-    #       php artisan migrate --force
-    #       php artisan optimize
+    - name: Run Remote/Artisan Commands
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /home/squintnl/3140.squint.nl
+          php artisan migrate --force
+          php artisan optimize
