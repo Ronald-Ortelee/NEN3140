@@ -43,13 +43,13 @@ jobs:
         TARGET: ${{ secrets.TARGET }}
 
 
-    # - name: Run Remote/Artisan Commands
-    #   uses: appleboy/ssh-action@v1
-    #   with:
-    #     host: ${{ secrets.REMOTE_HOST }}
-    #     username: ${{ secrets.REMOTE_USER }}
-    #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-    #     script: |
-    #       cd /home/squintnl/3140.squint.nl
-    #       php artisan migrate --force
-    #       php artisan optimize:clear
+    - name: Run Remote/Artisan Commands
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /home/squintnl/3140.squint.nl
+          php artisan migrate --force
+          php artisan optimize:clear
