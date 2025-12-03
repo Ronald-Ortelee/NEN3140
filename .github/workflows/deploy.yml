@@ -147,7 +147,7 @@ jobs:
 
       # Example deployment via SSH and rsync (adjust to your stack)
       - name: Deploy to server (example)
-        if: ${{ secrets.REMOTE_HOST && secrets.REMOTE_USER && secrets.SSH_PRIVATE_KEY }}
+        # if: ${{ secrets.REMOTE_HOST && secrets.REMOTE_USER && secrets.SSH_PRIVATE_KEY }}
         uses: burnett01/rsync-deployments@7.1.0
         with:
           switches: -avzr --delete --exclude='.git' --exclude='node_modules' --exclude='tests'
@@ -159,7 +159,7 @@ jobs:
 
       # Optional: run migrations on remote (example using SSH)
       - name: Run migrations on remote (optional)
-        if: ${{ secrets.REMOTE_HOST && secrets.REMOTE_USER && secrets.SSH_PRIVATE_KEY }}
+        # if: ${{ secrets.REMOTE_HOST && secrets.REMOTE_USER && secrets.SSH_PRIVATE_KEY }}
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.REMOTE_HOST }}
