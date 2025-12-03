@@ -148,7 +148,7 @@ jobs:
       # Example deployment via SSH and rsync (adjust to your stack)
       - name: Deploy to server (example)
         if: ${{ secrets.REMOTE_HOST && secrets.REMOTE_USER && secrets.SSH_PRIVATE_KEY }}
-        uses: burnett01/rsync-deployments@6.0.0
+        uses: burnett01/rsync-deployments@7.1.0
         with:
           switches: -avzr --delete --exclude='.git' --exclude='node_modules' --exclude='tests'
           path: .
