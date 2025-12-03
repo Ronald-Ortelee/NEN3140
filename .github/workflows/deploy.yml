@@ -19,8 +19,11 @@ jobs:
 
     - name: Update Laravel .env
       run: echo '${{ secrets.APP_NAME }}' > .env
+    - name: Update Laravel .env
       run: echo '${{ secrets.APP_ENV }}' > .env
+    - name: Update Laravel .env
       run: echo '${{ secrets.APP_KEY }}' > .env
+    - name: Update Laravel .env
       run: echo '${{ secrets.APP_DEBUG }}' > .env
 
     - name: Setup PHP
