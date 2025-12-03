@@ -53,3 +53,4 @@ jobs:
           cd /home/squintnl/3140.squint.nl
           php artisan migrate --force
           php artisan optimize:clear
+    
