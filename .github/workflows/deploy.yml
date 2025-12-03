@@ -17,6 +17,12 @@ jobs:
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
+    - name: Update Laravel .env
+      run: echo '${{ secrets.APP_NAME }}' > .env
+      run: echo '${{ secrets.APP_ENV }}' > .env
+      run: echo '${{ secrets.APP_KEY }}' > .env
+      run: echo '${{ secrets.APP_DEBUG }}' > .env
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
